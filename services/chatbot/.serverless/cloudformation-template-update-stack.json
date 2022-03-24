@@ -1,0 +1,220 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ChatBotStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Sub": "https://s3.amazonaws.com/${ServerlessDeploymentBucket}/serverless/chatbot/dev/1648156311129-2022-03-24T21:11:51.129Z/cloudformation.yaml"
+        },
+        "NotificationARNs": [
+          {
+            "Ref": "Topic"
+          }
+        ],
+        "Parameters": {
+          "Team": "demo",
+          "Environment": "dev",
+          "Domain": "dev",
+          "Channel": "<channel>",
+          "Workspace": "<channel>"
+        },
+        "Tags": [
+          {
+            "Key": "AWSTemplateFormatVersion",
+            "Value": "2010-09-09T00:00:00.000Z"
+          },
+          {
+            "Key": "Parameters",
+            "Value": {
+              "Team": {
+                "Type": "String"
+              },
+              "Environment": {
+                "Type": "String"
+              },
+              "Domain": {
+                "Type": "String"
+              },
+              "Channel": {
+                "Type": "String"
+              },
+              "Workspace": {
+                "Type": "String"
+              }
+            }
+          },
+          {
+            "Key": "Resources",
+            "Value": {
+              "NotificationTopic": {
+                "Type": "AWS::SNS::Topic",
+                "Properties": {
+                  "Tags": [
+                    {
+                      "Key": "Domain",
+                      "Value": ""
+                    },
+                    {
+                      "Key": "Team",
+                      "Value": ""
+                    }
+                  ],
+                  "TopicName": "Demo_Notification"
+                }
+              },
+              "SlackBot": {
+                "Type": "AWS::Chatbot::SlackChannelConfiguration",
+                "Properties": {
+                  "ConfigurationName": {
+                    "Fn::Sub": "${Team}-${Environment}-${Domain}"
+                  },
+                  "IamRoleArn": {
+                    "Fn::GetAtt": [
+                      "Role",
+                      "Arn"
+                    ]
+                  },
+                  "SlackChannelId": {
+                    "Ref": "Channel"
+                  },
+                  "SlackWorkspaceId": {
+                    "Ref": "Workspace"
+                  },
+                  "SnsTopicArns": [
+                    {
+                      "Ref": "NotificationTopic"
+                    }
+                  ]
+                }
+              },
+              "Role": {
+                "Type": "AWS::IAM::Role",
+                "Properties": {
+                  "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Principal": {
+                          "Service": "chatbot.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                      }
+                    ]
+                  },
+                  "Policies": [
+                    {
+                      "PolicyName": "Events",
+                      "PolicyDocument": {
+                        "Version": "2012-10-17T00:00:00.000Z",
+                        "Statement": [
+                          {
+                            "Effect": "Allow",
+                            "Action": [
+                              "events:*"
+                            ],
+                            "Resource": [
+                              "*"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "TimeoutInMinutes": 60
+      }
+    },
+    "Topic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "TestTopic"
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-chatbot-dev-ServerlessDeploymentBucketName"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  Team:
+    Type: String
+  Environment:
+    Type: String
+  Domain:
+    Type: String
+  Channel:
+    Type: String
+  Workspace:
+    Type: String
+
+Resources:
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+        - Key: Domain
+          Value: ""
+        - Key: Team
+          Value: ""
+      TopicName: "Demo_Notification"
+
+  SlackBot:
+    Type: AWS::Chatbot::SlackChannelConfiguration
+    Properties:
+      ConfigurationName: !Sub ${Team}-${Environment}-${Domain}
+      IamRoleArn: !GetAtt Role.Arn
+      SlackChannelId: !Ref Channel
+      SlackWorkspaceId: !Ref Workspace
+      SnsTopicArns: 
+        - !Ref NotificationTopic
+
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: chatbot.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: Events
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "events:*"
+                Resource:
+                  - "*"

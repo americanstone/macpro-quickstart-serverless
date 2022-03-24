@@ -1,0 +1,44 @@
+service: chatbot
+
+provider:
+    name: aws
+    iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "*"
+          Resource: !GetAtt CognitoUserPool.Arn
+
+plugins:
+  - serverless-aws-nested-stacks
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  nested-stacks:
+    location: nested-stacks # Where do you keep your nested stacks?
+    stacks:
+      - id: ChatBotStack # Logical ID (Required)
+        template: cloudformation.yaml # Template file name (Required)
+        enabled: true # optional flag for enabled/disabling substack
+        timeout: 60 # Minutes before stack creation times out.
+        parameters: # Stack parameters as key value pairs
+          - Team: demo
+          - Environment: dev
+          - Domain: dev
+          - Channel: <channel>
+          - Workspace: <channel>
+        tags: # Stack tags
+          - ${file(cloudformation.yaml)} # Load tags from a file?
+        notifications: # Notification ARN's for SNS
+          - !Ref Topic
+
+resources:
+  Resources:
+    Topic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: TestTopic
