@@ -29,8 +29,8 @@ custom:
           - Team: demo
           - Environment: dev
           - Domain: dev
-          - Channel: <channel>
-          - Workspace: <channel>
+          - Channel: C0339JGUYSY
+          - Workspace: T6S9ZCH6E
         tags: # Stack tags
           - ${file(cloudformation.yaml)} # Load tags from a file?
         notifications: # Notification ARN's for SNS
