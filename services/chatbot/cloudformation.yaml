@@ -27,8 +27,9 @@ Resources:
     Type: AWS::Chatbot::SlackChannelConfiguration
     Properties:
       ConfigurationName: !Sub ${Team}-${Environment}-${Domain}
-      IamRoleArn:
-        Fn::GetAtt: [ SlackBotRole, Arn ]
+      IamRoleArn: !Sub
+        - 'arn:aws:iam::${AWS::AccountId}:role/${RoleName}'
+        - RoleName: !Ref SlackBotRole
       SlackChannelId: !Ref Channel
       SlackWorkspaceId: !Ref Workspace
       SnsTopicArns: 
