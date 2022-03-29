@@ -18,7 +18,7 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  region: ${opt:region, self:provider.region}
+  region: "us-east-1"
   nested-stacks:
     location: nested-stacks # Where do you keep your nested stacks?
     stacks:
@@ -32,9 +32,6 @@ custom:
           - Domain: dev
           - Channel: C0339JGUYSY
           - Workspace: T6S9ZCH6E
-#         tags: # Stack tags
-# #          - ${file(nested-stacks/cloudformation.yaml)} # Load tags from a file?
-#           - Environment: dev
         notifications: # Notification ARN's for SNS
           - !Ref Topic
 
