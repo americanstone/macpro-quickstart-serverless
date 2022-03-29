@@ -26,23 +26,17 @@ Resources:
   SlackBot:
     Type: AWS::Chatbot::SlackChannelConfiguration
     Properties:
-      ConfigurationName: 
-        Fn::Sub: ${Team}-${Environment}-${Domain}
-      IamRoleArn: 
-        Fn::Sub:
-        - 'arn:aws:iam::${AWS::AccountId}:role/${RoleName}'
-        - RoleName: 
-            Ref: SlackBotRole
-      SlackChannelId: 
-        Ref: Channel
-      SlackWorkspaceId: 
-        Ref: Workspace
+      ConfigurationName: demo-chatbot-dev
+      IamRoleArn: 'arn:aws:iam::666736308865:role/SlackBotRole'
+      SlackChannelId: C0339JGUYSY
+      SlackWorkspaceId: T6S9ZCH6E
       SnsTopicArns: 
-        - Ref: NotificationTopic
+        - arn:aws:sns:us-east-1:666736308865:Demo_Notification
 
   SlackBotRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: SlackBotRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
