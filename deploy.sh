@@ -10,6 +10,7 @@ services=(
   'app-api'
   'stream-functions'
   'ui'
+  'chatbot'
   'ui-auth'
   'ui-src'
 )
