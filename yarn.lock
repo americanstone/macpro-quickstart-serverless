@@ -2894,7 +2894,7 @@ blob@0.0.5:
   resolved "https://registry.yarnpkg.com/blob/-/blob-0.0.5.tgz#d680eeef25f8cd91ad533f5b01eed48e64caf683"
   integrity sha512-gaqbzQPqOoamawKg0LGVd7SzLgXS+JH61oWprSLH+P+abTczqJbhTR8CmJ2u9/bUYNmHTGJx/UEmn6doAvvuig==
 
-bluebird@^3.4.7, bluebird@^3.5.1, bluebird@^3.5.5, bluebird@^3.7.2:
+bluebird@^3.0.6, bluebird@^3.4.7, bluebird@^3.5.1, bluebird@^3.5.5, bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -9283,6 +9283,13 @@ serialize-javascript@^5.0.1:
   integrity sha512-SaaNal9imEO737H2c05Og0/8LUXG7EnsZyMa8MzkmuHoELfT6txuj0cMqRj6zfPKnmQ1yasR4PCJc8x+M4JSPA==
   dependencies:
     randombytes "^2.1.0"
+
+serverless-aws-nested-stacks@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/serverless-aws-nested-stacks/-/serverless-aws-nested-stacks-0.1.2.tgz#4f19ae2579ad4601b078c060b2c4b5fcb19e5724"
+  integrity sha512-duedYzbie8TcDOpt8beRfW/vUCKT9d5ZqtCRGOYYX079W9hlbCE+c6LpGgRuxT6RAG2nmuBqbVA2rcNooZARYA==
+  dependencies:
+    bluebird "^3.0.6"
 
 serverless-bundle@^4.3.1:
   version "4.3.1"
