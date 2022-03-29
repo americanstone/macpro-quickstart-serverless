@@ -31,8 +31,9 @@ custom:
           - Domain: dev
           - Channel: C0339JGUYSY
           - Workspace: T6S9ZCH6E
-        tags: # Stack tags
-          - ${file(nested-stacks/cloudformation.yaml)} # Load tags from a file?
+#         tags: # Stack tags
+# #          - ${file(nested-stacks/cloudformation.yaml)} # Load tags from a file?
+#           - Environment: dev
         notifications: # Notification ARN's for SNS
           - !Ref Topic
 
