@@ -26,14 +26,19 @@ Resources:
   SlackBot:
     Type: AWS::Chatbot::SlackChannelConfiguration
     Properties:
-      ConfigurationName: !Sub ${Team}-${Environment}-${Domain}
-      IamRoleArn: !Sub
+      ConfigurationName: 
+        Fn::Sub: ${Team}-${Environment}-${Domain}
+      IamRoleArn: 
+        Fn::Sub:
         - 'arn:aws:iam::${AWS::AccountId}:role/${RoleName}'
-        - RoleName: !Ref SlackBotRole
-      SlackChannelId: !Ref Channel
-      SlackWorkspaceId: !Ref Workspace
+        - RoleName: 
+            Ref: SlackBotRole
+      SlackChannelId: 
+        Ref: Channel
+      SlackWorkspaceId: 
+        Ref: Workspace
       SnsTopicArns: 
-        - !Ref NotificationTopic
+        - Ref: NotificationTopic
 
   SlackBotRole:
     Type: AWS::IAM::Role
