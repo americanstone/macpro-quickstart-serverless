@@ -25,7 +25,7 @@ custom:
       - id: ChatBotStack # Logical ID (Required)
         template: cloudformation.yaml # Template file name (Required)
         enabled: true # optional flag for enabled/disabling substack
-        timeout: 60 # Minutes before stack creation times out.
+        timeout: 60 # Minutes before stack creation times out
         parameters: # Stack parameters as key value pairs
           - Team: demo
           - Environment: dev
