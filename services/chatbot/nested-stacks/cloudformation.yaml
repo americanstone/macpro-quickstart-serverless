@@ -28,8 +28,8 @@ Resources:
     Properties:
       ConfigurationName: demo-chatbot-dev
       IamRoleArn: 'arn:aws:iam::666736308865:user/managedcaredevops-serviceuser'
-      SlackChannelId: C0339JGUYSY
-      SlackWorkspaceId: T6S9ZCH6E
+      SlackChannelId: C03562Z43KQ
+      SlackWorkspaceId: T035RALT1NV
       SnsTopicArns: 
         - arn:aws:sns:us-east-1:666736308865:Demo_Notification
 
