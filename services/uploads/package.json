@@ -10,5 +10,12 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "serverless-s3-local": "^0.6.7"
+  },
+  "dependencies": {},
+  "//resolutions": {
+    "comment": "resolutions below are work arounds to upgrade vuln dependency for severless-s3-local.  These don't actually get packed with the deployed code as they are for dev only, but still doing for clean dependabot"
+  },
+  "resolutions": {
+    "minimist": "1.2.6"
   }
 }

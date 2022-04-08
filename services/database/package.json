@@ -10,5 +10,12 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "serverless-dynamodb-local": "^0.2.39"
+  },
+  "dependencies": {},
+  "//resolutions": {
+    "comment": "resolutions below are work arounds to upgrade vuln dependencies.  These don't actually get deployed with dev code as they are for dev only, but still doing for clean dependabot"
+  },
+  "resolutions": {
+    "minimist": "1.2.6"
   }
 }

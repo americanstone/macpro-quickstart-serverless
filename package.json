@@ -47,6 +47,7 @@
   "resolutions": {
     "ansi-regex": "5.0.1",
     "nanoid": "3.1.31",
-    "simple-git": "3.3.0"
+    "simple-git": "3.3.0",
+    "minimist": "1.2.6"
   }
 }

@@ -73,5 +73,12 @@
     "babel-jest": "^26.6.3",
     "serverless-cloudfront-invalidate": "^1.5.0",
     "serverless-s3-sync": "^1.14.4"
+  },
+  "dependencies": {},
+  "//resolutions": {
+    "comment": "resolutions below are work arounds to upgrade vuln dependencies.  These don't actually get packed with the deployed code as they are for dev only, but still doing for clean dependabot"
+  },
+  "resolutions": {
+    "minimist": "1.2.6"
   }
 }
