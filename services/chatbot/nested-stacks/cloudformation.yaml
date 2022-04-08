@@ -27,30 +27,30 @@ Resources:
     Type: AWS::Chatbot::SlackChannelConfiguration
     Properties:
       ConfigurationName: demo-chatbot-dev
-      IamRoleArn: 'arn:aws:iam::666736308865:user/managedcaredevops-serviceuser'
+      IamRoleArn: !GetAtt SlackBotRole.Arn
       SlackChannelId: C03562Z43KQ
       SlackWorkspaceId: T035RALT1NV
       SnsTopicArns: 
-        - arn:aws:sns:us-east-1:666736308865:Demo_Notification
+        - !Ref NotificationTopic
 
-  # SlackBotRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: SlackBotRole
-  #     AssumeRolePolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service: chatbot.amazonaws.com
-  #           Action: sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: Events
-  #         PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - "events:*"
-  #               Resource:
-  #                 - "*"
+  SlackBotRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: SlackBotRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: chatbot.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: Events
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "events:*"
+                Resource:
+                  - "*"
