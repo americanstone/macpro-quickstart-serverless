@@ -33,24 +33,24 @@ Resources:
       SnsTopicArns: 
         - arn:aws:sns:us-east-1:666736308865:Demo_Notification
 
-  SlackBotRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: SlackBotRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: chatbot.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: Events
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "events:*"
-                Resource:
-                  - "*"
+  # SlackBotRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: SlackBotRole
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: chatbot.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: Events
+  #         PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - "events:*"
+  #               Resource:
+  #                 - "*"
