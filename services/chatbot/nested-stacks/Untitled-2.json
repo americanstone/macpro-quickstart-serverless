@@ -1,0 +1,166 @@
+{
+    "teams": [
+        {
+            "accounts": [
+                "677829493285"
+            ],
+            "name": "bigmac-dev"
+        },
+        {
+            "accounts": [
+                "581264611691"
+            ],
+            "name": "bigmac-prod"
+        },
+        {
+            "accounts": [
+                "088925538735"
+            ],
+            "name": "bigmac-val"
+        },
+        {
+            "accounts": [
+                "910670052382"
+            ],
+            "name": "eregs-dev"
+        },
+        {
+            "accounts": [
+                "441002987790"
+            ],
+            "name": "eregs-prod"
+        },
+        {
+            "accounts": [
+                "302232934210"
+            ],
+            "name": "eregs-val"
+        },
+        {
+            "accounts": [
+                "730373213083"
+            ],
+            "name": "macpro"
+        },
+        {
+            "accounts": [
+                "116229642442"
+            ],
+            "name": "macstack-dev"
+        },
+        {
+            "accounts": [
+                "980018549706"
+            ],
+            "name": "macstack-prod"
+        },
+        {
+            "accounts": [
+                "989324938326"
+            ],
+            "name": "macstack-val"
+        },
+        {
+            "accounts": [
+                "121499393294"
+            ],
+            "name": "managedcare-dev"
+        },
+        {
+            "accounts": [
+                "701789472057"
+            ],
+            "name": "managedcare-prod"
+        },
+        {
+            "accounts": [
+                "798659716464"
+            ],
+            "name": "managedcare-val"
+        },
+        {
+            "accounts": [
+                "760820259496"
+            ],
+            "name": "mdct-dev"
+        },
+        {
+            "accounts": [
+                "459236791836"
+            ],
+            "name": "mdct-prod"
+        },
+        {
+            "accounts": [
+                "371820692882"
+            ],
+            "name": "mdct-val"
+        },
+        {
+            "accounts": [
+                "024259748323"
+            ],
+            "name": "mdct-qmr-dev"
+        },
+        {
+            "accounts": [
+                "204375272847"
+            ],
+            "name": "mdct-qmr-prod"
+        },
+        {
+            "accounts": [
+                "674529720001"
+            ],
+            "name": "mdct-qmr-val"
+        },
+        {
+            "accounts": [
+                "666324759800"
+            ],
+            "name": "eapd-test"
+        },
+        {
+            "accounts": [
+                "844367386026"
+            ],
+            "name": "eapd-val"
+        },
+        {
+            "accounts": [
+                "429188537274"
+            ],
+            "name": "eapd-prod"
+        },
+        {
+            "accounts": [
+                "582599238767"
+            ],
+            "name": "eapd-dev"
+        },
+        {
+            "accounts": [
+                "666736308865"
+            ],
+            "name": "macpro-serverless-quickstart"
+        },
+        {
+            "accounts": [
+                "635052997545"
+            ],
+            "name": "macplatform-dev"
+        },
+        {
+            "accounts": [
+                "169888657886"
+            ],
+            "name": "macplatform-impl"
+        },
+        {
+            "accounts": [
+                "591572556330"
+            ],
+            "name": "macplatform-prod"
+        }
+    ]
+}
