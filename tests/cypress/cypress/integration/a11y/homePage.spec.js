@@ -1,6 +1,6 @@
 describe("Home Page 508 test", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/");
+    cy.visit("APPLICATION_ENDPOINT/");
   });
 
   it("Check a11y on AMMAD Page", () => {
