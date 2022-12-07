@@ -1,4 +1,4 @@
-# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+# Refer to this service's README to configure all required SSM parameters.
 service: app-api
 
 frameworkVersion: "3"
@@ -18,6 +18,8 @@ plugins:
   - serverless-s3-bucket-helper
   - serverless-online
   - serverless-api-client-certificate
+  - serverless-iam-roles-per-function
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -31,7 +33,7 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-  webAclName: ${self:service}-${self:custom.stage}-webacl
+  webAclName: ${self:custom.stage}-${self:service}-webacl
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
@@ -45,6 +47,8 @@ custom:
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule, ssm:/configuration/default/warmup/schedule, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency, ssm:/configuration/default/warmup/concurrency, 5}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
 
 provider:
   name: aws
@@ -58,19 +62,6 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - dynamodb:DescribeTable
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - ${self:custom.tableArn}
-            - ${self:custom.atomicCounterTableArn}
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
@@ -78,6 +69,14 @@ provider:
 functions:
   create:
     handler: handlers/create.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+        Resource:
+          - ${self:custom.tableArn}
+          - ${self:custom.atomicCounterTableArn}
     events:
       - http:
           path: amendments
@@ -86,6 +85,12 @@ functions:
           authorizer: aws_iam
   get:
     handler: handlers/get.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - ${self:custom.tableArn}
     events:
       - http:
           path: amendments/{id}
@@ -94,6 +99,12 @@ functions:
           authorizer: aws_iam
   list:
     handler: handlers/list.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:Query
+        Resource:
+          - ${self:custom.tableArn}
     events:
       - http:
           path: amendments
@@ -102,6 +113,12 @@ functions:
           authorizer: aws_iam
   update:
     handler: handlers/update.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - ${self:custom.tableArn}
     events:
       - http:
           path: amendments/{id}
@@ -110,6 +127,12 @@ functions:
           authorizer: aws_iam
   delete:
     handler: handlers/delete.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:DeleteItem
+        Resource:
+          - ${self:custom.tableArn}
     events:
       - http:
           path: amendments/{id}
@@ -135,35 +158,6 @@ resources:
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_5XX
         RestApiId: !Ref ApiGatewayRestApi
-    ApiGwWebAcl:
-      Type: AWS::WAFv2::WebACL
-      Properties:
-        Name: ${self:custom.webAclName}
-        DefaultAction:
-          Block: {}
-        Rules:
-          - Action:
-              Allow: {}
-            Name: ${self:custom.webAclName}-allow-usa-plus-territories
-            Priority: 0
-            Statement:
-              GeoMatchStatement:
-                CountryCodes:
-                  - GU # Guam
-                  - PR # Puerto Rico
-                  - US # USA
-                  - UM # US Minor Outlying Islands
-                  - VI # US Virgin Islands
-                  - MP # Northern Mariana Islands
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: WafWebAcl
-        Scope: REGIONAL
-        VisibilityConfig:
-          CloudWatchMetricsEnabled: true
-          SampledRequestsEnabled: true
-          MetricName: ${self:custom.stage}-webacl
   Outputs:
     ApiGatewayRestApiName:
       Value: !Ref ApiGatewayRestApi

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
@@ -8,9 +8,12 @@ import LoaderButton from "../components/LoaderButton";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
 import { capitalize } from "../libs/helpers";
+import config from "../config";
+
+const allowAdminScope = config.cognito.ALLOW_ADMIN_SCOPE;
 
 export default function Profile() {
-  const history = useHistory();
+  const history = useNavigate();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -98,6 +101,7 @@ export default function Profile() {
             disableDropdown={true}
             enableAreaCodes={false}
             onChange={(e) => setPhoneNumber(e || "")}
+            disabled={allowAdminScope === "true" ? false : true}
           />
         </FormGroup>
         <LoaderButton
@@ -105,7 +109,9 @@ export default function Profile() {
           isLoading={isLoading}
           disabled={!validateForm()}
         >
-          Save
+          {allowAdminScope === "true"
+            ? "Save"
+            : "Contact the Help Desk to change your profile."}
         </LoaderButton>
       </form>
     </Container>

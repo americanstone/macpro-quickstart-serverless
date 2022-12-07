@@ -1,4 +1,4 @@
-# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+# Refer to this service's README to configure all required SSM parameters.
 service: proxy-api
 
 frameworkVersion: "3"
@@ -17,10 +17,13 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-api-client-certificate
   - serverless-plugin-scripts
+  - serverless-iam-roles-per-function
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
-  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api}
+  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
@@ -28,10 +31,13 @@ custom:
       - master
       - val
       - production
-  webAclName: ${self:service}-${self:custom.stage}-webacl
+  webAclName: ${self:custom.stage}-${self:service}-webacl
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
+  serverlessApiClientCertificate:
+    rotateCerts: true
+    daysLeft: 30
   warmup:
     default:
       enabled: true
@@ -39,6 +45,9 @@ custom:
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule, ssm:/configuration/default/warmup/schedule, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency, ssm:/configuration/default/warmup/concurrency, 5}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -55,6 +64,7 @@ provider:
 functions:
   princeProxy:
     handler: handlers/proxyFunc.main
+    iamRoleStatements: # add IAM statements for the function role here
     environment:
       proxyApi: ${self:custom.proxyApi}
     timeout: 30
@@ -84,35 +94,6 @@ resources:
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_5XX
         RestApiId: !Ref ApiGatewayRestApi
-    ApiGwWebAcl:
-      Type: AWS::WAFv2::WebACL
-      Properties:
-        Name: ${self:custom.webAclName}
-        DefaultAction:
-          Block: {}
-        Rules:
-          - Action:
-              Allow: {}
-            Name: ${self:custom.webAclName}-allow-usa-plus-territories
-            Priority: 0
-            Statement:
-              GeoMatchStatement:
-                CountryCodes:
-                  - GU # Guam
-                  - PR # Puerto Rico
-                  - US # USA
-                  - UM # US Minor Outlying Islands
-                  - VI # US Virgin Islands
-                  - MP # Northern Mariana Islands
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: WafWebAcl
-        Scope: REGIONAL
-        VisibilityConfig:
-          CloudWatchMetricsEnabled: true
-          SampledRequestsEnabled: true
-          MetricName: ${self:custom.stage}-webacl
   Outputs:
     ApiGatewayRestApiName:
       Value: !Ref ApiGatewayRestApi

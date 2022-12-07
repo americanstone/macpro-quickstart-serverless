@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import { AppContext } from "./libs/contextLib";
 import { onError } from "./libs/errorLib";
@@ -12,7 +12,7 @@ import config from "./config";
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     onLoad();
@@ -55,11 +55,7 @@ function App() {
         loginLocalUser(alice);
         userHasAuthenticated(true);
       } else {
-        const authConfig = Auth.configure();
-        const { domain, redirectSignIn, responseType } = authConfig.oauth;
-        const clientId = authConfig.userPoolWebClientId;
-        const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
-        window.location.assign(url);
+        await Auth.federatedSignIn();
       }
     } catch (e) {
       onError(e);

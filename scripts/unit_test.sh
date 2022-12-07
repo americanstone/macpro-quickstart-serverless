@@ -1,17 +1,12 @@
 #!/bin/bash
 
+# iterates through the list of services defined in this script and:
+# - installs dependencies
+# - runs unit tests
+
 set -e
 
-stage=${1:-dev}
-
 services=(
-  'database'
-  'uploads'
-  'app-api'
-  'proxy-api'
-  'stream-functions'
-  'ui'
-  'ui-auth'
   'ui-src'
 )
 
@@ -25,27 +20,22 @@ install_deps() {
   fi
 }
 
-deploy() {
+unit_test() {
   service=$1
   pushd services/$service
   install_deps
-  serverless deploy  --stage $stage
+  yarn run coverage
   popd
 }
+
+# move to the top level directory of the repo
+TOP_LEVEL_DIR="$(git rev-parse --show-toplevel)"
+cd "$TOP_LEVEL_DIR"
 
 install_deps
 export PATH=$(pwd)/node_modules/.bin/:$PATH
 
 for i in "${services[@]}"
 do
-	deploy $i
+	unit_test $i
 done
-
-pushd services
-echo """
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
-Application endpoint:  `./output.sh ui CloudFrontEndpointUrl $stage`
-------------------------------------------------------------------------------------------------
-"""
-popd
